@@ -21,6 +21,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var canRestart = Bool()
     var scoreLabelNode:SKLabelNode!
     var score = NSInteger()
+    var collisions = NSInteger()
     
     let birdCategory: UInt32 = 1 << 0
     let worldCategory: UInt32 = 1 << 1
@@ -28,6 +29,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     let scoreCategory: UInt32 = 1 << 3
     
     override func didMoveToView(view: SKView) {
+        
+        Crittercism.leaveBreadcrumb("About to build the scene")
         
         canRestart = false
         
@@ -137,9 +140,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         scoreLabelNode.text = String(score)
         self.addChild(scoreLabelNode)
         
+        Crittercism.leaveBreadcrumb("Built the scene")
     }
     
     func spawnPipes() {
+        
+        Crittercism.leaveBreadcrumb("About to spawn a pipe")
+        
         let pipePair = SKNode()
         pipePair.position = CGPointMake( self.frame.size.width + pipeTextureUp.size().width * 2, 0 )
         pipePair.zPosition = -10
@@ -178,6 +185,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         pipePair.runAction(movePipesAndRemove)
         pipes.addChild(pipePair)
+        
+        Crittercism.leaveBreadcrumb("Spawned a pipe")
+
         
     }
     
@@ -242,9 +252,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 score++
                 scoreLabelNode.text = String(score)
                 
+                Crittercism.setValue(String(score), forKey: "Current Score")
+                
                 // Add a little visual feedback for the score increment
                 scoreLabelNode.runAction(SKAction.sequence([SKAction.scaleTo(1.5, duration:NSTimeInterval(0.1)), SKAction.scaleTo(1.0, duration:NSTimeInterval(0.1))]))
             } else {
+                
+                collisions++;
+                Crittercism.setValue(String(collisions), forKey: "Collisions")
+                
+                CrittercismUtils.logHandledExceptionWithName("Boom!", andReason: "a collision happened")
                 
                 moving.speed = 0
                 

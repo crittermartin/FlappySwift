@@ -16,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Put in your Crittercism app ID below!
+        Crittercism.enableWithAppID("your_app_id")
         return true
     }
 
